@@ -1,0 +1,78 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>test</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=9" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700|Source+Serif+Pro:400,700">
+    <link rel="stylesheet" type="text/css" href="/theme/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css">
+</head>
+<body itemscope itemtype="http://schema.org/Blog">
+<header class="site-header">
+    <a href="">
+    </a>
+    <h1 itemprop="name"><a href=""></a></h1>
+</header>
+    <section class="main-content">
+<article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline" id="test">test</h1>
+        <p>
+            <meta itemprop="datePublished" content="2017-04-17T00:00:00+01:00">
+            <meta itemprop="dateModified" content="2017-04-17T00:00:00+01:00">
+            Posted on 17 april 2017 in <a href="/category/test.html">test</a>
+        </p>
+    </header>
+    <section id="content" itemprop="mainEntityOfPage">
+        <p>test</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python2</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">payload</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\x90</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="mi">120</span>
+<span class="n">payload</span> <span class="o">+=</span> <span class="n">p32</span><span class="p">(</span><span class="mh">0x41414141</span><span class="p">)</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+</pre></div>
+
+
+<p>test</p>
+<div class="highlight"><pre><span></span><span class="err">[0</span><span class="nf">x00400430</span><span class="p">]</span><span class="o">&gt;</span> <span class="nv">pdf</span> <span class="err">@</span> <span class="nv">main</span>
+            <span class="c1">;-- main:</span>
+<span class="err">┌</span> <span class="err">(</span><span class="nf">fcn</span><span class="p">)</span> <span class="nv">sym.main</span> <span class="mi">31</span>
+<span class="err">│</span>   <span class="nf">sym.main</span> <span class="p">()</span><span class="c1">;</span>
+<span class="err">│</span>              <span class="c1">; DATA XREF from 0x0040044d (entry0)</span>
+<span class="err">│</span>           <span class="err">0</span><span class="nf">x00400526</span>      <span class="mi">55</span>             <span class="nv">push</span> <span class="nb">rbp</span>
+<span class="err">│</span>           <span class="err">0</span><span class="nf">x00400527</span>      <span class="mi">4889</span><span class="nv">e5</span>         <span class="nv">mov</span> <span class="nb">rbp</span><span class="p">,</span> <span class="nb">rsp</span>
+<span class="err">│</span>           <span class="err">0</span><span class="nf">x0040052a</span>      <span class="nv">ba09000000</span>     <span class="nv">mov</span> <span class="nb">edx</span><span class="p">,</span> <span class="mi">9</span>                  <span class="c1">; size_t nbytes</span>
+<span class="err">│</span>           <span class="err">0</span><span class="nf">x0040052f</span>      <span class="nv">bed4054000</span>     <span class="nv">mov</span> <span class="nb">esi</span><span class="p">,</span> <span class="nv">str.hi_there_n</span>     <span class="c1">; &quot;hi there.&quot; @ 0x4005d4 ; void *ptr</span>
+<span class="err">│</span>           <span class="err">0</span><span class="nf">x00400534</span>      <span class="nv">bf00000000</span>     <span class="nv">mov</span> <span class="nb">edi</span><span class="p">,</span> <span class="mi">0</span>                  <span class="c1">; int fd</span>
+<span class="err">│</span>           <span class="err">0</span><span class="nf">x00400539</span>      <span class="nv">e8c2feffff</span>     <span class="nv">call</span> <span class="nv">sym.imp.write</span>         <span class="c1">; ssize_t write(int fd, void *ptr, size_t nbytes)</span>
+<span class="err">│</span>           <span class="err">0</span><span class="nf">x0040053e</span>      <span class="nv">b800000000</span>     <span class="nv">mov</span> <span class="nb">eax</span><span class="p">,</span> <span class="mi">0</span>
+<span class="err">│</span>           <span class="err">0</span><span class="nf">x00400543</span>      <span class="mi">5</span><span class="nv">d</span>             <span class="nv">pop</span> <span class="nb">rbp</span>
+<span class="err">└</span>           <span class="err">0</span><span class="nf">x00400544</span>      <span class="nv">c3</span>             <span class="nv">ret</span>
+<span class="err">0</span><span class="nf">x08048a4b</span>    <span class="mi">83</span><span class="nv">e4f0</span>         <span class="nv">and</span> <span class="nb">esp</span><span class="p">,</span> <span class="mh">0xfffffff0</span>
+<span class="err">[0</span><span class="nf">x00400430</span><span class="p">]</span><span class="o">&gt;</span>
+</pre></div>
+    </section>
+    <footer>
+        <div class="tags">
+                <a href="/tag/test.html">test</a>
+        </div>
+<div class="vcard author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <a href="/author/gbsn.html">
+        <img class="photo circle" itemprop="image" content="" src=""/>
+        <strong class="fn name" itemprop="name">gbsn</strong>
+    </a>
+</div>    </footer>
+</article>
+    </section>
+
+<footer class="site-footer">
+    <p>&copy; gbsn </p>
+</footer></body>
+</html>
